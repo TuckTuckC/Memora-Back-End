@@ -23,6 +23,6 @@ export class AppController {
 
     console.log('Received a POST request'); // Log that a POST request was received
     console.log(`Request Data: ${JSON.stringify(data)}`); // Log the actual payload sent with the POST request
-    return { message: 'Check your console for POST!' }; // Send a response back to the client
+    return { message: data }; // Send a response back to the client
   }
 }
