@@ -1,6 +1,7 @@
 // Import required decorators and types from NestJS and Express
 import { Controller, Get, Post, Body, Req } from '@nestjs/common';
 import { Request } from 'express';
+import axios from 'axios';
 
 // Use @Controller() decorator to mark the class as a NestJS controller
 @Controller()
@@ -24,5 +25,35 @@ export class AppController {
     console.log('Received a POST request'); // Log that a POST request was received
     console.log(`Request Data: ${JSON.stringify(data)}`); // Log the actual payload sent with the POST request
     return { message: data }; // Send a response back to the client
+  }
+  @Post('send-notification')
+  async sendNotification(@Body() data: any, token: string) {
+    const serverKey =
+      'AAAAp3m6xPA:APA91bFnjHpvkHB0y5cCbAO9hTf66DYjvZFFdqY03ToUofoSsFew6NDnIR1XxvLNqWBp369HOaScDY10FmVSPtsiu1y-akzJHyEQagDWQrQaYpbh93ZYNp80R4fGqVtb8EasxSYtUxn4';
+    const message = {
+      token: token,
+      notification: {
+        title: 'Yessir',
+        body: 'How about that!',
+      },
+    };
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${serverKey}`,
+        'Content-Type': 'application/json',
+      },
+    };
+
+    try {
+      const response = await axios.post(
+        'https://fcm.googleapis.com/v1/projects/memora-fbbcf/messages:send',
+        message,
+        config,
+      );
+      console.log('Notification sent successfully', response.data);
+    } catch (error) {
+      console.log('Error sending notification', error);
+    }
   }
 }
